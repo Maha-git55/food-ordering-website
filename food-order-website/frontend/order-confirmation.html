@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed | Foodie Heaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+            z-index: 999;
+        }
+        .checkmark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: draw 1s ease-out forwards;
+        }
+        @keyframes draw {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+    <!-- Confetti Animation -->
+    <div id="confetti-container"></div>
+
+    <!-- Main Content -->
+    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-xl p-8 max-w-md w-full mx-4 text-center">
+        <!-- Animated Checkmark -->
+        <svg class="w-24 h-24 mx-auto mb-6 text-green-500" viewBox="0 0 52 52">
+            <circle class="text-green-100" cx="26" cy="26" r="25" fill="currentColor"/>
+            <path class="checkmark" stroke="#10B981" stroke-width="4" stroke-linecap="round" 
+                fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+        
+        <h1 class="text-3xl font-bold mb-4 dark:text-white">Order Confirmed!</h1>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">
+            Your delicious food is being prepared. We'll notify you when it's on its way.
+        </p>
+        
+        <div class="bg-gray-50 dark:bg-gray-600 rounded-lg p-4 mb-6">
+            <p class="font-medium dark:text-white">Order ID: <span id="order-id">#12345</span></p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Estimated delivery: 30-45 minutes</p>
+        </div>
+        
+        <div class="flex space-x-4">
+            <a href="index.html" 
+                class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
+                <i class="fas fa-home mr-2"></i> Home
+            </a>
+            <a href="restaurants.html" 
+                class="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg transition">
+                <i class="fas fa-utensils mr-2"></i> Order More
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Confetti Animation
+        function createConfetti() {
+            const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+            const container = document.getElementById('confetti-container');
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -10 + 'px';
+                confetti.style.width = 5 + Math.random() * 10 + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.opacity = Math.random();
+                confetti.style.animation = `fall ${3 + Math.random() * 5}s linear forwards`;
+                
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // Add CSS for animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to { transform: translateY(100vh) rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Run on page load
+        window.onload = function() {
+            createConfetti();
+            // Generate random order ID
+            document.getElementById('order-id').textContent = '#' + Math.floor(10000 + Math.random() * 90000);
+        };
+    </script>
+</body>
+</html>

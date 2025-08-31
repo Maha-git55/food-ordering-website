@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Italian Cuisine - FoodieHeaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        .floating-delay {
+            animation: floating 3s ease-in-out 1s infinite;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .food-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: -1;
+            transition: all 0.3s ease;
+            filter: blur(0px);
+        }
+        
+        .food-card:hover .card-bg {
+            opacity: 0.4;
+            filter: blur(2px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        
+        /* Glitter effect */
+        .glitter {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glitter::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 45%,
+                rgba(255, 255, 255, 0.5) 48%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0.5) 52%,
+                rgba(255, 255, 255, 0) 57%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: glitter 4s infinite;
+            opacity: 0;
+            z-index: 10;
+        }
+        
+        @keyframes glitter {
+            0% { opacity: 0; transform: translateX(-100%) translateY(-100%) rotate(30deg); }
+            20% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(100%) translateY(100%) rotate(30deg); }
+        }
+        
+        /* Pizza Card Background */
+        .pizza-bg {
+            background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');
+        }
+        
+        /* Pasta Card Background */
+        .pasta-bg {
+            background-image: url('https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGl0YWxpYW4lMjBwYXN0YXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=80');
+        }
+        
+        /* Dessert Card Background */
+        .dessert-bg {
+            background-image: url('https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGl0YWxpYW4lMjBkZXNzZXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=80');
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            animation: modalFade 0.5s;
+        }
+        
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close {
+            color: #fff;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            z-index: 101;
+        }
+        
+        .close:hover {
+            color: #f59e0b;
+        }
+        
+        .dish-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .dish-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dish-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .dish-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 15px;
+            color: white;
+        }
+        
+        .star {
+            color: #f59e0b;
+        }
+        
+        .coming-soon-badge {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10 z-0">
+        <div class="absolute top-0 left-0 w-full h-full" style="background-image: url('data:image/svg+xml,%3Csvg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z\" fill=\"%23ffffff\" fill-opacity=\"1\" fill-rule=\"evenodd\"/%3E%3C/svg%3E');"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="relative z-10 container mx-auto px-4 py-12">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="floating inline-block mb-6 glitter">
+                <i class="fas fa-pizza-slice text-6xl text-red-500"></i>
+            </div>
+            <h1 class="title-font text-5xl md:text-6xl font-bold mb-4 gradient-text">
+                Italian Cuisine
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Get ready for an authentic Italian experience! We're bringing the flavors of Italy to your doorstep soon.
+            </p>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-8 mb-16 border border-white/20">
+            <h2 class="text-2xl font-semibold text-center mb-6">Opening Soon</h2>
+            <div class="flex justify-center gap-4 md:gap-8">
+                <div class="text-center">
+                    <div class="bg-red-500 rounded-lg p-4 w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-2xl font-bold" id="days">14</span>
+                    </div>
+                    <span class="text-sm">Days</span>
+                </div>
+                <div class="text-center">
+                    <div class="bg-green-500 rounded-lg p-4 w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-2xl font-bold" id="hours">08</span>
+                    </div>
+                    <span class="text-sm">Hours</span>
+                </div>
+                <div class="text-center">
+                    <div class="bg-yellow-500 rounded-lg p-4 w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-2xl font-bold" id="minutes">45</span>
+                    </div>
+                    <span class="text-sm">Minutes</span>
+                </div>
+                <div class="text-center">
+                    <div class="bg-blue-500 rounded-lg p-4 w-20 h-20 flex items-center justify-center mx-auto mb-2">
+                        <span class="text-2xl font-bold" id="seconds">30</span>
+                    </div>
+                    <span class="text-sm">Seconds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Coming Soon Message -->
+        <div class="text-center mb-16 pulse">
+            <div class="inline-block bg-gradient-to-r from-red-500 to-yellow-500 text-white px-6 py-3 rounded-full">
+                <i class="fas fa-clock mr-2"></i> Coming Soon
+            </div>
+        </div>
+
+        <!-- Italian Food Cards with Background Images -->
+        <h2 class="title-font text-3xl text-center mb-10">What to Expect</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Pizza Card -->
+            <div class="food-card rounded-2xl p-6 card-hover floating relative glitter" onclick="openModal('pizzaModal')">
+                <div class="card-bg pizza-bg"></div>
+                <div class="text-center mb-4">
+                    <i class="fas fa-pizza-slice text-4xl text-red-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-center mb-2">Authentic Pizza</h3>
+                <p class="text-gray-300 text-center">Wood-fired pizzas with fresh ingredients imported directly from Italy</p>
+            </div>
+
+            <!-- Pasta Card -->
+            <div class="food-card rounded-2xl p-6 card-hover floating-delay relative glitter" onclick="openModal('pastaModal')">
+                <div class="card-bg pasta-bg"></div>
+                <div class="text-center mb-4">
+                    <i class="fas fa-utensils text-4xl text-yellow-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-center mb-2">Fresh Pasta</h3>
+                <p class="text-gray-300 text-center">Handmade pasta with traditional sauces and recipes from Italy</p>
+            </div>
+
+            <!-- Dessert Card -->
+            <div class="food-card rounded-2xl p-6 card-hover floating relative glitter" onclick="openModal('dessertModal')">
+                <div class="card-bg dessert-bg"></div>
+                <div class="text-center mb-4">
+                    <i class="fas fa-ice-cream text-4xl text-pink-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-center mb-2">Italian Desserts</h3>
+                <p class="text-gray-300 text-center">Tiramisu, gelato, cannoli and other classic Italian sweets</p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <a href="restaurants.html" class="inline-flex items-center bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 transform hover:scale-105">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Restaurants
+            </a>
+        </div>
+
+        <!-- Floating Food Icons -->
+        <div class="fixed top-20 left-5 floating text-red-400 opacity-50 text-2xl">
+            <i class="fas fa-pizza-slice"></i>
+        </div>
+        <div class="fixed top-1/3 right-8 floating-delay text-yellow-400 opacity-50 text-2xl">
+            <i class="fas fa-bread-slice"></i>
+        </div>
+        <div class="fixed bottom-1/4 left-10 floating text-green-400 opacity-50 text-2xl">
+            <i class="fas fa-wine-bottle"></i>
+        </div>
+        <div class="fixed bottom-40 right-12 floating-delay text-blue-400 opacity-50 text-2xl">
+            <i class="fas fa-cheese"></i>
+        </div>
+    </div>
+
+    <!-- Pizza Modal -->
+    <div id="pizzaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('pizzaModal')">&times;</span>
+            <div class="p-6">
+                <h2 class="title-font text-4xl text-center mb-8 gradient-text">Authentic Italian Pizzas</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://tse3.mm.bing.net/th/id/OIP.Y1q6MoyCOiUVw04_X1lGswHaE8?r=0&rs=1&pid=ImgDetMain&o=7&rm=3')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Margherita</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star-half-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Classic pizza with tomato sauce, fresh mozzarella, basil, and olive oil</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Popular</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://www.dogtownpizza.com/wp-content/uploads/2020/01/picking-slice-of-pepperoni-pizza-picture-id1133727757.jpg')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Pepperoni</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Spicy pepperoni, mozzarella, and tomato sauce on a thin crust</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Chef's Choice</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/5 p-6 rounded-2xl">
+                    <h3 class="text-2xl font-semibold mb-4">About Our Pizzas</h3>
+                    <p class="text-gray-300 mb-4">Our pizzas are made with ingredients imported directly from Italy. We use San Marzano tomatoes, fresh buffalo mozzarella, and our dough is fermented for 48 hours for optimal flavor and texture.</p>
+                    <p class="text-gray-300">All pizzas are cooked in our traditional wood-fired oven at 900°F for just 90 seconds, giving them the perfect char and crispiness.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pasta Modal -->
+    <div id="pastaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('pastaModal')">&times;</span>
+            <div class="p-6">
+                <h2 class="title-font text-4xl text-center mb-8 gradient-text">Authentic Italian Pastas</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://southsidekitchen.com/wp-content/uploads/2020/08/spaghetti-carbonara-12-1024x768.jpg')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Carbonara</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Creamy sauce with eggs, cheese, pancetta, and black pepper</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Creamy</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://th.bing.com/th/id/R.a0f6dcd0457a6a7e3ed2ed84279d3036?rik=0jHpM33agseMwA&pid=ImgRaw&r=0')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Lasagna</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star-half-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Layers of pasta, beef ragù, béchamel sauce, and melted cheese</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Classic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/5 p-6 rounded-2xl">
+                    <h3 class="text-2xl font-semibold mb-4">About Our Pastas</h3>
+                    <p class="text-gray-300 mb-4">All our pasta is made fresh daily using traditional techniques and the finest semolina flour. We offer both classic and modern interpretations of Italy's most beloved pasta dishes.</p>
+                    <p class="text-gray-300">Our sauces are simmered for hours to develop deep, complex flavors that pair perfectly with our homemade pasta.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dessert Modal -->
+    <div id="dessertModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('dessertModal')">&times;</span>
+            <div class="p-6">
+                <h2 class="title-font text-4xl text-center mb-8 gradient-text">Authentic Italian Desserts</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://howtomakerecipes.com/wp-content/uploads/2021/08/tiramisu-classic-italian-no-bake-dessert-video-recipe1.jpg')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Tiramisu</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star-half-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Layers of coffee-soaked ladyfingers and mascarpone cream</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Favorite</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dish-card">
+                        <div class="dish-img" style="background-image: url('https://th.bing.com/th/id/R.6b411442a2d1645c6ce6ed8133de9d91?rik=kwlP%2f5HfoEDLuA&pid=ImgRaw&r=0')">
+                            <div class="dish-overlay">
+                                <h3 class="font-bold">Gelato</h3>
+                                <div class="flex">
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                    <span class="star"><i class="fas fa-star"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-300">Creamy Italian ice cream in various flavors with yaamm bite</p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <span class="text-yellow-400 font-bold">Coming Soon</span>
+                                <span class="coming-soon-badge">Refreshing</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/5 p-6 rounded-2xl">
+                    <h3 class="text-2xl font-semibold mb-4">About Our Desserts</h3>
+                    <p class="text-gray-300 mb-4">Our desserts are crafted using traditional Italian recipes passed down through generations. We use only the finest ingredients, including imported Italian mascarpone, cocoa, and espresso.</p>
+                    <p class="text-gray-300">Our gelato is churned slowly to create a denser, creamier texture with more intense flavors than regular ice cream.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple countdown timer
+        function updateCountdown() {
+            const days = document.getElementById('days');
+            const hours = document.getElementById('hours');
+            const minutes = document.getElementById('minutes');
+            const seconds = document.getElementById('seconds');
+            
+            // Set target date (14 days from now)
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + 14);
+            
+            function update() {
+                const now = new Date();
+                const diff = targetDate - now;
+                
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                days.textContent = d.toString().padStart(2, '0');
+                hours.textContent = h.toString().padStart(2, '0');
+                minutes.textContent = m.toString().padStart(2, '0');
+                seconds.textContent = s.toString().padStart(2, '0');
+            }
+            
+            update();
+            setInterval(update, 1000);
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', updateCountdown);
+    </script>
+</body>
+</html>

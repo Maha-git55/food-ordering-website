@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Foodie Heaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // You can add custom colors if needed
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .payment-method { 
+            transition: all 0.3s ease; 
+        }
+        .payment-method:hover { 
+            transform: scale(1.02); 
+        }
+        .payment-method input:checked + label {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        }
+        .nav-link { 
+            color: #374151;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover {
+            color: #3b82f6;
+        }
+        .dark .nav-link {
+            color: #d1d5db;
+        }
+        .dark .nav-link:hover {
+            color: #60a5fa;
+        }
+        .nav-link-mobile {
+            color: #374151;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            transition: color 0.2s ease;
+        }
+        .nav-link-mobile:hover {
+            color: #3b82f6;
+        }
+        .dark .nav-link-mobile {
+            color: #d1d5db;
+        }
+        .dark .nav-link-mobile:hover {
+            color: #60a5fa;
+        }
+        .dark-mode-toggle {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            background-color: #e5e7eb;
+            color: #374151;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .dark .dark-mode-toggle {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -0.5rem;
+            right: -0.5rem;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+            width: 1.25rem;
+            height: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Side-scroll container for mobile */
+        .side-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding-bottom: 1rem;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .side-scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari */
+        }
+        .side-scroll-card {
+            flex: 0 0 auto;
+            width: 85%;
+            scroll-snap-align: start;
+        }
+        
+        @media (min-width: 1024px) {
+            .side-scroll-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                overflow-x: visible;
+                gap: 2rem;
+            }
+            .side-scroll-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold text-blue-600 dark:text-blue-400 flex items-center">
+                    <i class="fas fa-utensils mr-2"></i>Foodie<span class="text-orange-500">Heaven</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="nav-link"><i class="fas fa-home mr-1"></i> Home</a>
+                    <a href="restaurants.html" class="nav-link"><i class="fas fa-store mr-1"></i> Restaurants</a>
+                    <a href="cart.html" class="relative nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="cart-badge">0</span>
+                    </a>
+                    <button onclick="toggleDarkMode()" class="dark-mode-toggle">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden text-gray-500 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu (Dropdown) -->
+            <div id="mobile-menu" class="hidden md:hidden pb-3">
+                <a href="index.html" class="block py-2 nav-link-mobile"><i class="fas fa-home mr-2"></i>Home</a>
+                <a href="restaurants.html" class="block py-2 nav-link-mobile"><i class="fas fa-store mr-2"></i>Restaurants</a>
+                <a href="cart.html" class="block py-2 nav-link-mobile relative">
+                    <i class="fas fa-shopping-cart mr-2"></i>Cart
+                    <span id="cart-count-mobile" class="cart-badge">0</span>
+                </a>
+                <button onclick="toggleDarkMode()" class="block py-2 nav-link-mobile">
+                    <i class="fas fa-moon dark:hidden mr-2"></i>
+                    <i class="fas fa-sun hidden dark:inline mr-2"></i>
+                    Toggle Theme
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <button onclick="goBackToCart()" class="flex items-center text-blue-500 hover:text-blue-700 dark:hover:text-blue-400 transition-colors bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm hover:shadow-md">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Cart
+            </button>
+        </div>
+
+        <!-- Side-scroll container for mobile -->
+        <div class="side-scroll-container">
+            <!-- Order Summary Card -->
+            <div class="side-scroll-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">
+                    <i class="fas fa-receipt mr-2 text-orange-500"></i> Order Summary
+                </h2>
+                
+                <div id="order-items" class="space-y-4 mb-6">
+                    <!-- Order items will be loaded here -->
+                </div>
+                
+                <div class="border-t border-gray-200 dark:border-gray-600 pt-4 space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-300">Subtotal:</span>
+                        <span id="subtotal" class="font-medium dark:text-white">Rs. 0.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-300">Delivery Fee:</span>
+                        <span id="delivery-fee" class="font-medium dark:text-white">Rs. 100.00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold mt-4">
+                        <span class="dark:text-white">Total:</span>
+                        <span id="total" class="text-orange-500">Rs. 0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Form Card -->
+            <div class="side-scroll-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">
+                    <i class="fas fa-credit-card mr-2 text-orange-500"></i> Payment Details
+                </h2>
+                
+                <form id="checkout-form" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Full Name</label>
+                        <input type="text" required 
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Delivery Address</label>
+                        <textarea required rows="3"
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Phone Number</label>
+                        <input type="tel" required 
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-300 mb-4 font-medium">Payment Method</label>
+                        <div class="space-y-3">
+                            <div class="payment-method">
+                                <input type="radio" id="cash-on-delivery" name="payment" value="cod" checked 
+                                    class="hidden">
+                                <label for="cash-on-delivery" 
+                                    class="flex items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer dark:bg-gray-700">
+                                    <i class="fas fa-money-bill-wave text-2xl text-green-500 mr-3"></i>
+                                    <div>
+                                        <h3 class="font-bold dark:text-white">Cash on Delivery</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Pay when you receive your order</p>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="payment-method">
+                                <input type="radio" id="credit-card" name="payment" value="card" 
+                                    class="hidden">
+                                <label for="credit-card" 
+                                    class="flex items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer dark:bg-gray-700">
+                                    <i class="fas fa-credit-card text-2xl text-blue-500 mr-3"></i>
+                                    <div>
+                                        <h3 class="font-bold dark:text-white">Credit/Debit Card</h3>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Secure online payment</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" 
+                        class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-3 rounded-lg font-semibold text-lg transition-colors shadow-md">
+                        <i class="fas fa-check-circle mr-2"></i> Place Order
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // API Base URL
+        const API_BASE = "http://127.0.0.1:8000/api";
+        
+   // JWT Token Functions - YE CODE HAR PAGE KE SCRIPT MEIN ADD KARO
+function saveToken(token) {
+    localStorage.setItem('access_token', token);
+}
+
+function getToken() {
+    return localStorage.getItem('access_token');
+}
+
+function removeToken() {
+    localStorage.removeItem('access_token');
+}
+
+// Check if user is logged in
+function checkLogin() {
+    return !!getToken();
+}
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+        }
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Update cart count
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            document.getElementById('cart-count').textContent = cart.length;
+            document.getElementById('cart-count-mobile').textContent = cart.length;
+        }
+
+        // Back to Cart function
+        function goBackToCart() {
+            window.location.href = 'cart.html';
+        }
+
+        // Load Order Summary
+        function loadOrderSummary() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const container = document.getElementById('order-items');
+            const subtotal = cart.reduce((sum, item) => sum + Number(item.price), 0);
+            const deliveryFee = 100;
+            const total = subtotal + deliveryFee;
+            
+            container.innerHTML = cart.map(item => `
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full mr-2">
+                            <i class="fas fa-utensils"></i>
+                        </span>
+                        <span class="dark:text-white">${item.name}</span>
+                    </div>
+                    <span class="font-medium dark:text-white">Rs. ${Number(item.price).toFixed(2)}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('subtotal').textContent = `Rs. ${subtotal.toFixed(2)}`;
+            document.getElementById('total').textContent = `Rs. ${total.toFixed(2)}`;
+        }
+        
+        // Form Submission
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const orderData = {
+                items: cart,
+                total: cart.reduce((sum, item) => sum + Number(item.price), 0) + 100,
+                address: document.querySelector('textarea').value,
+                phone: document.querySelector('input[type="tel"]').value,
+                payment_method: document.querySelector('input[name="payment"]:checked').value
+            };
+
+            try {
+                // Simulate API call (replace with your actual API endpoint)
+                console.log('Order placed:', orderData);
+                
+                // Show success message
+                alert('Order placed successfully!');
+                
+                // Clear cart and redirect
+                localStorage.removeItem('cart');
+                window.location.href = 'order-confirmation.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Order failed! Please try again.');
+            }
+        });
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+
+             if (!checkLogin()) {
+        window.location.href = "login.html";
+        return;
+    }
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                window.location.href = 'cart.html';
+                return;
+            }
+            
+            updateCartCount();
+            loadOrderSummary();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Foodie Heaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Initialize dark mode before page loads to prevent flash
+        (function() {
+            const savedMode = localStorage.getItem('darkMode');
+            if (savedMode === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+        
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Navbar link styles */
+        .nav-link {
+            color: #374151;
+            transition: color 0.3s;
+        }
+        
+        .dark .nav-link {
+            color: #d1d5db;
+        }
+        
+        .nav-link:hover {
+            color: #3b82f6;
+        }
+        
+        .dark .nav-link:hover {
+            color: #60a5fa;
+        }
+        
+        .nav-link-mobile {
+            color: #374151;
+            transition: color 0.3s;
+        }
+        
+        .dark .nav-link-mobile {
+            color: #d1d5db;
+        }
+        
+        .nav-link-mobile:hover {
+            color: #3b82f6;
+        }
+        
+        .dark .nav-link-mobile:hover {
+            color: #60a5fa;
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .dark-mode-toggle {
+            color: #374151;
+            transition: color 0.3s;
+        }
+        
+        .dark .dark-mode-toggle {
+            color: #d1d5db;
+        }
+        
+        .dark-mode-toggle:hover {
+            color: #3b82f6;
+        }
+        
+        .dark .dark-mode-toggle:hover {
+            color: #60a5fa;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .text-shine {
+            background: linear-gradient(90deg, #ff7700, #ffd700, #ff7700);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        
+        .team-card {
+            transition: all 0.3s ease;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .team-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(255, 255, 255, 0.05);
+        }
+        
+        .hero-pattern {
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .stats-card {
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white dark:bg-gray-800 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <!-- Logo -->
+                <a href="index.html" class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    <i class="fas fa-utensils mr-2"></i>Foodie<span class="text-orange-500">Heaven</span>
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="nav-link"><i class="fas fa-home mr-1"></i> Home</a>
+                    <a href="restaurants.html" class="nav-link"><i class="fas fa-store mr-1"></i> Restaurants</a>
+                    <a href="about.html" class="nav-link"><i class="fas fa-info-circle mr-1"></i> About</a>
+                    <a href="cart.html" class="relative nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count" class="cart-badge">0</span>
+                    </a>
+                    <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
+                    <button onclick="toggleDarkMode()" class="dark-mode-toggle">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-button" class="md:hidden text-gray-500 dark:text-gray-400 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Menu (Dropdown) -->
+            <div id="mobile-menu" class="hidden md:hidden pb-3">
+                <a href="index.html" class="block py-2 nav-link-mobile"><i class="fas fa-home mr-2"></i>Home</a>
+                <a href="restaurants.html" class="block py-2 nav-link-mobile"><i class="fas fa-store mr-2"></i>Restaurants</a>
+                <a href="about.html" class="block py-2 nav-link-mobile"><i class="fas fa-info-circle mr-2"></i>About</a>
+                <a href="cart.html" class="block py-2 nav-link-mobile relative">
+                    <i class="fas fa-shopping-cart mr-2"></i>Cart
+                    <span id="cart-count-mobile" class="cart-badge">0</span>
+                </a>
+                <a href="login.html" class="block py-2 nav-link-mobile"><i class="fas fa-sign-in-alt mr-2"></i>Login</a>
+                <button onclick="toggleDarkMode()" class="block py-2 nav-link-mobile w-full text-left">
+                    <i class="fas fa-moon dark:hidden mr-2"></i>
+                    <i class="fas fa-sun hidden dark:inline mr-2"></i>
+                    Toggle Theme
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern bg-cover bg-center h-96 flex items-center justify-center text-center text-white relative">
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+        <div class="relative z-10 px-4">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 animate-pulse">
+                About <span class="text-shine">Foodie Heaven</span>
+            </h1>
+            <p class="text-xl mb-8">Our journey from a small kitchen to your favorite food delivery service</p>
+        </div>
+    </section>
+
+    <!-- Our Story -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4 dark:text-white">
+                    <span class="text-shine">Our Story</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    Founded in 2023, Foodie Heaven began as a small family restaurant with a big dream - to bring the best culinary experiences right to your doorstep.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="float-animation">
+                    <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Our Restaurant" 
+                         class="rounded-2xl shadow-xl w-full h-96 object-cover">
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 dark:text-white">From Humble Beginnings</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        What started as a small kitchen with just three tables has now grown into one of the most beloved food delivery services in the region. Our passion for authentic flavors and commitment to quality has been the driving force behind our success.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        Today, we partner with over 100 restaurants to bring you a diverse selection of cuisines, from traditional local dishes to international favorites.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="stats-card bg-orange-100 dark:bg-orange-900 p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">100+</div>
+                    <div class="text-gray-600 dark:text-gray-300">Restaurant Partners</div>
+                </div>
+                <div class="stats-card bg-green-100 dark:bg-green-900 p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">10K+</div>
+                    <div class="text-gray-600 dark:text-gray-300">Happy Customers</div>
+                </div>
+                <div class="stats-card bg-blue-100 dark:bg-blue-900 p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">30min</div>
+                    <div class="text-gray-600 dark:text-gray-300">Avg. Delivery Time</div>
+                </div>
+                <div class="stats-card bg-purple-100 dark:bg-purple-900 p-6 rounded-2xl text-center">
+                    <div class="text-4xl font-bold text-purple-600 dark:text-purple-400 mb-2">24/7</div>
+                    <div class="text-gray-600 dark:text-gray-300">Service Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4 dark:text-white">
+                    <span class="text-shine">Meet Our Team</span>
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    The passionate people behind Foodie Heaven who work tirelessly to bring you the best dining experience.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="team-card bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md text-center">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Team Member" 
+                         class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="text-xl font-bold mb-2 dark:text-white">Sarah Khan</h3>
+                    <p class="text-orange-500 mb-2">Founder & CEO</p>
+                    <p class="text-gray-600 dark:text-gray-300">Passionate about bringing people together through food.</p>
+                </div>
+                
+                <div class="team-card bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md text-center">
+                    <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Team Member" 
+                         class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="text-xl font-bold mb-2 dark:text-white">Ali Ahmed</h3>
+                    <p class="text-orange-500 mb-2">Head Chef</p>
+                    <p class="text-gray-600 dark:text-gray-300">Crafting delicious recipes with over 15 years of experience.</p>
+                </div>
+                
+                <div class="team-card bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md text-center">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                         alt="Team Member" 
+                         class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="text-xl font-bold mb-2 dark:text-white">Fatima Riaz</h3>
+                    <p class="text-orange-500 mb-2">Operations Manager</p>
+                    <p class="text-gray-600 dark:text-gray-300">Ensuring smooth deliveries and customer satisfaction.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4 dark:text-white">
+                    <span class="text-shine">Our Mission</span>
+                </h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 dark:text-white">Quality Food, Delivered with Love</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4">
+                        At Foodie Heaven, we believe that great food has the power to bring people together and create memorable experiences. Our mission is to make restaurant-quality food accessible to everyone, right in the comfort of their homes.
+                    </p>
+                    <p class="text-gray-600 dark:text-gray-300">
+                        We carefully select our restaurant partners based on their commitment to quality, hygiene standards, and most importantly, the deliciousness of their food!
+                    </p>
+                </div>
+                <div class="float-animation">
+                    <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Our Mission" 
+                         class="rounded-2xl shadow-xl w-full h-96 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Foodie Heaven</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mt-2">Delivering happiness to your doorstep since 2023</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Quick Links</h3>
+                    <ul class="mt-2 space-y-2">
+                        <li><a href="index.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">Home</a></li>
+                        <li><a href="restaurants.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">Restaurants</a></li>
+                        <li><a href="about.html" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 transition-colors">About Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Contact Info</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mt-2"><i class="fas fa-map-marker-alt mr-2"></i> 123 Food Street, City</p>
+                    <p class="text-gray-600 dark:text-gray-300"><i class="fas fa-phone mr-2"></i> +92 300 1234567</p>
+                    <p class="text-gray-600 dark:text-gray-300"><i class="fas fa-envelope mr-2"></i> info@foodieheaven.com</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Follow Us</h3>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 text-xl"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-600 dark:text-gray-300 hover:text-blue-500 text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-600 dark:text-gray-300">© 2023 Foodie Heaven. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global cart functions
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function updateCartCount() {
+            const count = cart.length;
+            document.getElementById('cart-count').textContent = count;
+            document.getElementById('cart-count-mobile').textContent = count;
+        }
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const button = document.getElementById('mobile-menu-button');
+            if (menu) {
+                menu.classList.toggle('hidden');
+                
+                // Change icon
+                const icon = button.querySelector('i');
+                if (menu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartCount();
+            
+            // Setup mobile menu toggle
+            document.getElementById('mobile-menu-button').addEventListener('click', toggleMobileMenu);
+            
+            // Add animations to elements
+            const teamCards = document.querySelectorAll('.team-card');
+            teamCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('transition-all', 'duration-300');
+                }, index * 100);
+            });
+            
+            const statsCards = document.querySelectorAll('.stats-card');
+            statsCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('transition-all', 'duration-300');
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html>

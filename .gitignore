@@ -1,0 +1,23 @@
+ECHO is on.
+# Python
+_pycache_/
+*.py[cod]
+*.sqlite3
+env/
+venv/
+
+# Django
+*.log
+db.sqlite3
+
+# Node / Frontend
+node_modules/
+build/
+
+# PostgreSQL
+*.pgsql
+*.psql
+*.dump
+
+# Others
+*.env

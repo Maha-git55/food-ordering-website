@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Foodie Heaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+         @media (max-width: 768px) {
+    #emoji-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+    .form-container {
+        margin-top: 20vh; /* Push form down */
+    }
+}
+
+        .emoji {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: float 5s infinite ease-in-out;
+            z-index: -1;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+        .form-container {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .dark .form-container {
+            background: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+    <!-- Animated Emoji Background -->
+    <div id="emoji-container"></div>
+
+    <!-- Form Container -->
+    <div class="glass-container rounded-xl shadow-xl overflow-hidden w-full max-w-md mx-4">
+        <div class="bg-white/80 dark:bg-gray-800/80  backdrop-blur-md  p-8">
+            <div class="text-center mb-8">
+                <i class="fas fa-user-circle text-6xl text-blue-500 mb-4"></i>
+                <h1 class="text-3xl font-bold dark:text-white">Welcome Back!</h1>
+                <p class="text-gray-600 dark:text-gray-400">Login to continue your food journey</p>
+            </div>
+
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                    <input type="email" required 
+                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 dark:text-gray-300 mb-2">Password</label>
+                    <input type="password" required 
+                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                    <a href="#" class="text-sm text-blue-500 hover:underline mt-2 block">Forgot password?</a>
+                </div>
+
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition duration-300">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                </button>
+
+                <div class="text-center text-gray-600 dark:text-gray-400">
+                    Don't have an account? 
+                    <a href="signup.html" class="text-blue-500 hover:underline font-medium">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    // === YE CODE COPY KARO AUR PURANE SCRIPT KI JAGAH PASTE KAR DO ===
+
+    // API Base URL - YAHAN SE REQUEST JAYEGI (YEH LINE ADD KARNI HAI SABSE UPAR)
+    const API_BASE = "http://127.0.0.1:8000";
+
+    // JWT Token Functions - YE CODE HAR PAGE KE SCRIPT MEIN ADD KARO
+    function saveToken(token) {
+        localStorage.setItem('access_token', token);
+    }
+    function getToken() {
+        return localStorage.getItem('access_token');
+    }
+    function removeToken() {
+        localStorage.removeItem('access_token');
+    }
+    // Check if user is logged in
+    function checkLogin() {
+        return !!getToken();
+    }
+
+    // Emoji Animation
+    const emojis = ['🌸', '🍔', '🌮', '🍕', '🥗', '🍦', '🍩', '🌯'];
+    const container = document.getElementById('emoji-container');
+    
+    function createEmoji() {
+        const emoji = document.createElement('div');
+        emoji.className = 'emoji';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 100 + 'vw';
+        emoji.style.animationDuration = 3 + Math.random() * 7 + 's';
+        container.appendChild(emoji);
+        
+        setTimeout(() => {
+            emoji.remove();
+        }, 10000);
+    }
+    
+    // Create emojis every 300ms
+    setInterval(createEmoji, 300);
+    
+    // Dark Mode Toggle (same as other pages)
+    function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
+    }
+    
+    // Form Submission
+    // login.html mein form submission ko update karo
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+            email: document.querySelector('input[type="email"]').value,
+            password: document.querySelector('input[type="password"]').value
+        };
+        
+        try {
+            // Yeh line change karni hai: ${API_BASE}/api/login/
+            const response = await fetch(`${API_BASE}/api/login/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                saveToken(data.access); // Token save karo
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('userData', JSON.stringify(data.user));
+                alert('Login successful!');
+                window.location.href = "restaurants.html"; // Restaurants page redirect
+            } else {
+                alert('Login failed: ' + (data.error || 'Invalid credentials'));
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Login failed! Please try again.');
+        }
+    });
+</script>
+</body>
+</html>
