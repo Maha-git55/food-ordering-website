@@ -52,7 +52,7 @@ A complete *Food Ordering Platform* built with *Django (PostgreSQL as database)*
 ![Italian Page](screenshots/italian.png)
 
 ## 🍜 Chinese Page
-![Chinese Page](screenshot/chinese.png)
+![Chinese Page](screenshots/chinese.png)
 
 
 
